@@ -4,7 +4,15 @@ This directory contains all the resources needed to reproduce the figures and ta
 :exclamation:**TODO**: Data loaders for the NeWT tasks need to be updated for the public release of the data. 
 
 ## Python requirements
-The required python modules along with the exact version that we used can be found in the [requirements.txt](requirements.txt) file. 
+~~The required python modules along with the exact version that we used can be found in the [requirements.txt](requirements.txt) file.~~
+
+The environment is reproducable using the `newtenv.yaml` file and [miniconda](https://docs.conda.io/en/latest/miniconda.html#linux-installers). Run:
+
+```bash
+$ conda env create -f newtenv.yaml
+$ conda activate newtenv
+```
+
 
 ## Dataset Preparation
 You need to download the following datasets:
