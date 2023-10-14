@@ -75,7 +75,7 @@ def extract_newt_features(
         task_name = os.path.basename(newt_task_dir)
         pbar.set_description("Processing %s" % task_name)
 
-        train_paths, train_classes, test_paths, test_classes = dataset_utils.load_newt_task(newt_task_dir)
+        train_paths, train_classes, test_paths, test_classes = dataset_utils.load_newt_task(newt_task_dir, is_df=True)
 
         X_train = feature_extractor.extract_features_batch(train_paths, batch_size=feature_extractor_batch_size)
         assert X_train.shape[0] == len(train_paths), "Feature extractor did not extract features for all train images?"

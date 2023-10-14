@@ -4,7 +4,7 @@ from PIL import Image
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, models
-
+from tqdm.auto import tqdm
 def loader(path):
     # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
     with open(path, 'rb') as f:
@@ -62,7 +62,7 @@ class PTResNet50FeatureExtractor():
         feature_index = 0
         ids = []
         with torch.no_grad():
-            for ii, (images, indices) in enumerate(loader):
+            for ii, (images, indices) in tqdm(enumerate(loader), total=len(loader)):
                 images = images.to(self.device)
 
                 op = self.model(images)

@@ -31,12 +31,12 @@ def extract_fg_features(
 
         train_paths, train_classes, test_paths, test_classes =  dataset_utils.load_dataset(dataset_name, dataset_dir)
 
-        X_train = feature_extractor.extract_features_batch(train_paths, batch_size=feature_extractor_batch_size, use_pbar=True)
+        X_train = feature_extractor.extract_features_batch(train_paths, batch_size=feature_extractor_batch_size, use_pbar=True, device=device)
         assert X_train.shape[0] == len(train_paths), "Feature extractor did not extract features for all train images?"
         y_train = np.array(train_classes)
         assert X_train.shape[0] == y_train.shape[0], "Mismatch between the number of train examples and the number of train labels"
 
-        X_test = feature_extractor.extract_features_batch(test_paths, batch_size=feature_extractor_batch_size, use_pbar=True)
+        X_test = feature_extractor.extract_features_batch(test_paths, batch_size=feature_extractor_batch_size, use_pbar=True, device=device)
         assert X_test.shape[0] == len(test_paths), "Feature extractor did not extract features for all test images?"
         y_test = np.array(test_classes)
         assert X_test.shape[0] == y_test.shape[0], "Mismatch between the number of test examples and the number of test labels"
@@ -62,6 +62,7 @@ def extract_newt_features(
     model_spec,
     newt_dataset_dir,
     feature_extractor_batch_size=32,
+    metadata_is_df=False,
     device=None):
 
     feature_extractor = tf_resnet_feature_extractor.load_feature_extractor(model_spec, device)
@@ -72,18 +73,17 @@ def extract_newt_features(
 
     pbar = tqdm.tqdm(newt_task_dirs)
     for newt_task_dir in pbar:
-
         task_name = os.path.basename(newt_task_dir)
         pbar.set_description("Processing %s" % task_name)
 
-        train_paths, train_classes, test_paths, test_classes = dataset_utils.load_newt_task(newt_task_dir)
+        train_paths, train_classes, test_paths, test_classes = dataset_utils.load_newt_task(newt_task_dir, is_df=metadata_is_df)
 
-        X_train = feature_extractor.extract_features_batch(train_paths, batch_size=feature_extractor_batch_size, use_pbar=True)
+        X_train = feature_extractor.extract_features_batch(train_paths, batch_size=feature_extractor_batch_size, use_pbar=True, device=device)
         assert X_train.shape[0] == len(train_paths), "Feature extractor did not extract features for all train images?"
         y_train = np.array(train_classes)
         assert X_train.shape[0] == y_train.shape[0], "Mismatch between the number of train examples and the number of train labels"
 
-        X_test = feature_extractor.extract_features_batch(test_paths, batch_size=feature_extractor_batch_size, use_pbar=True)
+        X_test = feature_extractor.extract_features_batch(test_paths, batch_size=feature_extractor_batch_size, use_pbar=True, device=device)
         assert X_test.shape[0] == len(test_paths), "Feature extractor did not extract features for all test images?"
         y_test = np.array(test_classes)
         assert X_test.shape[0] == y_test.shape[0], "Mismatch between the number of test examples and the number of test labels"
@@ -106,7 +106,7 @@ def extract_newt_features(
 
 
 
-def run_tf_feature_extractor(newt_dataset_dir, fg_datasets, newt_features_dir, fg_features_dir, feature_extractor_batch_size=64, overwrite=False, x4_batch_size=16):
+def run_tf_feature_extractor(newt_dataset_dir, fg_datasets, newt_features_dir, fg_features_dir, feature_extractor_batch_size=64, overwrite=False, x4_batch_size=16, metadata_is_df=False, use_gpu=None):
     """ Run the experiments from the paper for the tensorflow models.
     """
 
@@ -118,7 +118,12 @@ def run_tf_feature_extractor(newt_dataset_dir, fg_datasets, newt_features_dir, f
             st = time.time()
 
             # The resnet50x4 models often don't fit in a "standard" gpu
-            if model_spec['backbone'] == configs.RESNET50_X4:
+            if use_gpu:
+                batch_size = feature_extractor_batch_size
+                device = "/GPU:0"
+                print("Overriding device to %s" % device)
+                print("Overriding batch size to %d" % feature_extractor_batch_size)
+            elif model_spec['backbone'] == configs.RESNET50_X4:
                 device = '/device:CPU:0'
                 batch_size=x4_batch_size
             else:
@@ -135,7 +140,8 @@ def run_tf_feature_extractor(newt_dataset_dir, fg_datasets, newt_features_dir, f
                         model_spec,
                         newt_dataset_dir,
                         feature_extractor_batch_size=batch_size,
-                        device=device
+                        device=device,
+                        metadata_is_df=metadata_is_df,
                     )
                     newt_features_df = pd.DataFrame(newt_features)
                     newt_features_df['model_name'] = model_spec['name']
@@ -199,6 +205,15 @@ def parse_args():
                         help='Feature extractor batch size for the ResNet x4 models.', type=int,
                         required=False, default=16)
 
+    parser.add_argument('--metadata_is_df', dest='metadata_is_df',
+                        help='True if the newt metadata is a csv.', action='store_true',
+                        required=False, default=False)
+
+    parser.add_argument('--use_gpu', dest='use_gpu',
+                        help='Overrides default behavior to use one GPU for inference.', action='store_true',
+                        required=False, default=False)
+    
+
     parsed_args = parser.parse_args()
 
     return parsed_args
@@ -225,6 +240,8 @@ if __name__ == '__main__':
         fg_features_dir=args.fg_feature_dir,
         feature_extractor_batch_size=args.batch_size,
         overwrite=args.overwrite,
-        x4_batch_size=args.x4_batch_size
+        x4_batch_size=args.x4_batch_size,
+        metadata_is_df=args.metadata_is_df,
+        use_gpu=args.use_gpu,
     )
 

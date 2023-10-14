@@ -59,9 +59,8 @@ class TFResNet50FeatureExtractor():
 
         return features[0].numpy()
 
-    def extract_features_batch(self, image_fp_list, batch_size=32, use_pbar=False):
-
-        with tf.device("CPU:0"):
+    def extract_features_batch(self, image_fp_list, batch_size=32, device="CPU:0", use_pbar=False):
+        with tf.device(device):
             dataset = tf.data.Dataset.from_tensor_slices(image_fp_list)
             dataset = dataset.map(self.preprocess, num_parallel_calls=tf.data.experimental.AUTOTUNE)
             dataset = dataset.batch(batch_size, drop_remainder=False)
@@ -72,7 +71,7 @@ class TFResNet50FeatureExtractor():
         feature_index = 0
 
         if use_pbar:
-            dataset_iter = tqdm.tqdm(dataset_iter, leave=False)
+            dataset_iter = tqdm.tqdm(dataset_iter, leave=False, total=len(image_fp_list), desc="Extracting features")
 
         with tf.device(self.device):
 
