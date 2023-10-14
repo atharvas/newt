@@ -1,0 +1,88 @@
+.
+├── archive.zip
+├── attributes.txt
+├── CUB_200_2011
+│   ├── attributes
+│   │   ├── certainties.txt
+│   │   ├── class_attribute_labels_continuous.txt
+│   │   └── image_attribute_labels.txt
+│   ├── bounding_boxes.txt
+│   ├── classes.txt
+│   ├── image_class_labels.txt
+│   ├── images
+│   ├── images.txt
+│   ├── parts
+│   │   ├── part_click_locs.txt
+│   │   ├── part_locs.txt
+│   │   └── parts.txt
+│   ├── README
+│   └── train_test_split.txt
+├── CUB_200_2011.tgz
+├── cvpr21_newt_pretrained_models
+│   ├── pt
+│   │   ├── imagenet_moco_v2_800ep_pretrain.pth.tar
+│   │   ├── imagenet_swav_800ep_pretrain.pth.tar
+│   │   ├── inat2018_supervised.pth.tar
+│   │   ├── inat2021_mini_swav_ckp-199.pth
+│   │   ├── inat2021_moco_v2_mini_1000_ep.pth.tar
+│   │   ├── inat2021_supervised_large_from_scratch.pth.tar
+│   │   ├── inat2021_supervised_large.pth.tar
+│   │   ├── inat2021_supervised_mini_from_scratch.pth.tar
+│   │   ├── inat2021_supervised_mini.pth.tar
+│   │   └── inat2021_swav_mini_1000_ep.pth
+│   └── tf
+│       ├── imagenet
+│       ├── inat2021
+│       └── inat2021_mini
+├── cvpr21_newt_pretrained_models.tar.gz
+├── nabirds
+│   ├── bounding_boxes.txt
+│   ├── classes.txt
+│   ├── hierarchy.txt
+│   ├── image_class_labels.txt
+│   ├── images
+│   ├── images.txt
+│   ├── __init__.py
+│   ├── nabirds.py
+│   ├── parts
+│   │   ├── part_locs.txt
+│   │   └── parts.txt
+│   ├── photographers.txt
+│   ├── README
+│   ├── README~
+│   ├── sizes.txt
+│   └── train_test_split.txt
+├── nabirds.tar.gz
+├── newt
+│   └── newt2021
+│       ├── newt2021_images
+│       ├── newt2021_images.tar.gz
+│       ├── newt2021_labels.csv
+│       ├── public_test.json.tar.gz
+│       ├── train.json
+│       ├── train.json.tar.gz
+│       ├── train.tar.gz
+│       ├── val
+│       ├── val.json
+│       ├── val.json.tar.gz
+│       └── val.tar.gz
+├── newt2021_labels.csv
+├── newt2021_labels.csv.tar.gz
+├── oxford_flowers
+│   ├── 102flowers.tgz
+│   ├── imagelabels.mat
+│   ├── jpg
+│   ├── setid.mat
+│   └── wget-log
+├── stanford_cars
+│   ├── cars_annos.mat
+│   ├── cars_test
+│   │   └── cars_test
+│   └── cars_train
+│       └── cars_train
+└── stanford_dogs
+    ├── test_data.mat
+    ├── train_data.mat
+    └── wget-log
+
+780 directories, 8249 files
